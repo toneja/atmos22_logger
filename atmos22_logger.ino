@@ -18,7 +18,7 @@ RAK_SDI12 mySDI12(RX_PIN, TX_PIN, OE_PIN);
 float windSpd = 0.0;
 float windDir = 0.0;
 float windTmp = 0.0;
-time_t lastPollingTime = 0;
+time_t nextPollingTime = 0;
 
 // BLUETOOTH
 #define MAX_SAMPLERS 4
@@ -47,7 +47,8 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastPollingTime < SAMPLING_RATE) { return; }
+  if (millis() < nextPollingTime) { delay(nextPollingTime - millis()); }
+  nextPollingTime = millis() + SAMPLING_RATE;
   // Poll the sonic anemometer
   digitalWrite(LED_GREEN, HIGH);
   sonic_get();
@@ -103,7 +104,7 @@ void sonic_init(void) {
   mySDI12.sendCommand("0I!");
   String response = mySDI12.readStringUntil('\n');
   response.trim();
-  lastPollingTime = millis();
+  nextPollingTime = millis() + SAMPLING_RATE;
 #if DEBUG
   Serial.println(response);
 #endif
@@ -114,7 +115,6 @@ void sonic_get(void) {
   mySDI12.sendCommand("0R4!");
   String response = mySDI12.readStringUntil('\n');
   response.trim();
-  lastPollingTime = millis();
   response_handler(response);
 #if DEBUG
   // Serial.print("R4! response: ");
