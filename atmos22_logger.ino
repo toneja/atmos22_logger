@@ -96,6 +96,23 @@ const char* compass_direction(float heading) {
   return directions[(int)((heading + 22.5) / 45.0) % 8];
 }
 
+void error(void) {
+#if DEBUG
+  Serial.println("Failed to detect ATMOS22.\n");
+#endif
+  u8g2.clearBuffer();
+  u8g2.drawStr(14, 30, "ATMOS22 NOT");
+  u8g2.drawStr(28, 45, "DETECTED");
+  u8g2.sendBuffer();
+  // Flash LEDs
+  while (1) {
+    digitalToggle(LED_GREEN);
+    delay(75);
+    digitalToggle(LED_BLUE);
+    delay(75);
+  }
+}
+
 // Sonic (ATMOS22)
 void sonic_init(void) {
   mySDI12.begin();
@@ -104,6 +121,7 @@ void sonic_init(void) {
   mySDI12.sendCommand("0I!");
   String response = mySDI12.readStringUntil('\n');
   response.trim();
+  if (response.length() <= 0) { error(); }
   nextPollingTime = millis() + SAMPLING_RATE;
 #if DEBUG
   Serial.println(response);
