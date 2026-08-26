@@ -1,9 +1,14 @@
 #include <bluefruit.h>
 #include <math.h>
 #include <RAK13010_SDI12.h>
+#include <U8g2lib.h>
 
 #define DEBUG 0
 #define SAMPLING_RATE 1000  // milliseconds
+
+// DISPLAY
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2);  // R2 = Rotate display 180°
+char displayMsg[32];
 
 // METER ATMOS22
 #define TX_PIN WB_IO6
@@ -36,6 +41,7 @@ void setup() {
   while (!Serial) { delay(10); }
   Serial.printf("Starting %s\n", bleName);
 #endif
+  oled_init();
   sonic_init();
   ble_init();
 }
@@ -53,6 +59,40 @@ void loop() {
     delay(2);
     digitalWrite(LED_BLUE, LOW);
   }
+  oled_update();
+}
+
+// DISPLAY
+void oled_init(void) {
+  u8g2.begin();
+  u8g2.setContrast(255);  // Brightness range [0-255]
+  u8g2.setFont(u8g2_font_9x15_tf);
+  u8g2.clearBuffer();
+  u8g2.drawStr(0, 15, bleName);
+  u8g2.sendBuffer();
+}
+
+void oled_update(void) {
+  u8g2.clearBuffer();
+  u8g2.drawStr(0, 15, bleName);
+  memset(displayMsg, 0, sizeof(displayMsg));
+  snprintf(displayMsg, sizeof(displayMsg), "Spd  %.2f m/s", windSpd);
+  u8g2.drawStr(0, 30, displayMsg);
+  memset(displayMsg, 0, sizeof(displayMsg));
+  snprintf(displayMsg, sizeof(displayMsg), "Dir  %s", compass_direction(windDir));
+  u8g2.drawStr(0, 45, displayMsg);
+  memset(displayMsg, 0, sizeof(displayMsg));
+  snprintf(displayMsg, sizeof(displayMsg), "Tmp  %.1fC", windTmp);
+  u8g2.drawStr(0, 60, displayMsg);
+  u8g2.sendBuffer();
+}
+
+const char* compass_direction(float heading) {
+  const char* directions[] = {
+    "N", "NE", "E", "SE",
+    "S", "SW", "W", "NW"
+  };
+  return directions[(int)((heading + 22.5) / 45.0) % 8];
 }
 
 // Sonic (ATMOS22)
