@@ -75,10 +75,14 @@ void sonic_get(void) {
   String response = mySDI12.readStringUntil('\n');
   response.trim();
   lastPollingTime = millis();
+  response_handler(response);
 #if DEBUG
   // Serial.print("R4! response: ");
   // Serial.println(response);
 #endif
+}
+
+void response_handler(String response) {
   // aR4! response format:
   // a<TAB><NorthWindSpeed> <EastWindSpeed> <gustWindSpeed> <airTemperature> <xOrientation> <yOrientation> <nullValue><CR><sensortype><Checksum><CRC>
   //
