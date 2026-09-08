@@ -22,7 +22,7 @@
 #include <RAK13010_SDI12.h>
 #include <U8g2lib.h>
 
-#define DEBUG 1
+#define DEBUG 0
 #define SAMPLING_RATE 1000  // milliseconds
 
 // DISPLAY
