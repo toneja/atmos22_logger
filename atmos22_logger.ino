@@ -176,8 +176,8 @@ void response_handler(String response) {
   // Calculate wind speed and heading using N/E vectors
   windSpd = sqrt(pow(nVector, 2) + pow(eVector, 2));
   windDir = atan2(eVector, nVector) * (180.0 / M_PI);
-  if (windDir < 0) { windDir += 360.0; }
-  if (windDir > 360) { windDir -= 360.0; }
+  if (windDir < 0.0) { windDir += 360.0; }
+  if (windDir > 360.0) { windDir -= 360.0; }
 #if DEBUG
   Serial.printf("Speed: %.2f m/s, Heading: %.1f, Temp: %.1f°C\n",
                 windSpd, windDir, windTmp);
