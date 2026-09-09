@@ -53,13 +53,12 @@ char bleMsg[BLE_BUF_SIZE];
 char bleName[15] = "ATMOS22 LOGGER";
 
 void setup() {
-  pinMode(LED_GREEN, OUTPUT);
-  pinMode(LED_BLUE, OUTPUT);
 #if DEBUG
   Serial.begin(115200);
   while (!Serial) { delay(10); }
   Serial.printf("Starting %s\n", bleName);
 #endif
+  led_init();
   oled_init();
   sonic_init();
   ble_init();
@@ -80,6 +79,16 @@ void loop() {
     digitalWrite(LED_BLUE, LOW);
   }
   oled_update();
+}
+
+void led_init(void) {
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_BLUE, OUTPUT);
+  for (uint8_t i = 0; i < 10; i++) {
+    digitalToggle(LED_GREEN);
+    digitalToggle(LED_BLUE);
+    delay(200);
+  }
 }
 
 // DISPLAY
