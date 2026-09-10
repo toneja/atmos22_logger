@@ -58,8 +58,9 @@ void setup() {
   while (!Serial) { delay(10); }
   Serial.printf("Starting %s\n", bleName);
 #endif
-  led_init();
+  sensor_init();
   oled_init();
+  led_init();
   sonic_init();
   ble_init();
 }
@@ -79,6 +80,13 @@ void loop() {
     digitalWrite(LED_BLUE, LOW);
   }
   oled_update();
+}
+
+void sensor_init(void) {
+  // power up the sensors
+  pinMode(WB_IO2, OUTPUT);
+  digitalWrite(WB_IO2, HIGH);
+  delay(1000);
 }
 
 void led_init(void) {
