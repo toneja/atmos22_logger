@@ -23,6 +23,7 @@
 #include <U8g2lib.h>
 
 #define DEBUG 0
+#define EMULATOR 0
 #define SAMPLING_RATE 1000  // milliseconds
 
 // DISPLAY
@@ -63,6 +64,10 @@ void setup() {
   led_init();
   sonic_init();
   ble_init();
+#if EMULATOR
+  // seed the RNG with noise
+  randomSeed(analogRead(0));  // testing
+#endif
 }
 
 void loop() {
@@ -136,6 +141,9 @@ void error(void) {
 #if DEBUG
   Serial.println("Failed to detect ATMOS22.\n");
 #endif
+#if EMULATOR
+  return;
+#endif
   u8g2.clearBuffer();
   u8g2.drawStr(14, 30, "ATMOS22 NOT");
   u8g2.drawStr(28, 45, "DETECTED");
@@ -165,6 +173,12 @@ void sonic_init(void) {
 }
 
 void sonic_get(void) {
+#if EMULATOR
+  windSpd = random(5, 500) / 100.0;
+  windDir = random(0, 36000) / 100.0;
+  windTmp = random(0, 4000)/ 100.0;
+  return;
+#endif
   mySDI12.clearBuffer();
   mySDI12.sendCommand("0R4!");
   String response = mySDI12.readStringUntil('\n');
