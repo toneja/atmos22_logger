@@ -183,6 +183,7 @@ void sonic_get(void) {
   mySDI12.sendCommand("0R4!");
   String response = mySDI12.readStringUntil('\n');
   response.trim();
+  if (response.length() <= 0) { return; }
   response_handler(response);
 #if DEBUG
   // Serial.print("R4! response: ");
