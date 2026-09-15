@@ -232,8 +232,8 @@ void response_handler(String response) {
   while (windDir < 0.0) { windDir += 360.0; }
   while (windDir > 360.0) { windDir -= 360.0; }
 #if DEBUG
-  Serial.printf("Speed: %.2f m/s, Heading: %.1f, Temp: %.1f°C\n",
-                windSpd, windDir, windTmp);
+  Serial.printf("Speed: %.2f m/s, Heading: %.1f (%s), Temp: %.1f°C\n",
+                windSpd, windDir, compass_direction(windDir), windTmp);
 #endif
 }
 
