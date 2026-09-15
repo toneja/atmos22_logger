@@ -17,10 +17,12 @@
 * along with this program. If not, see <https://www.gnu.org/licenses/>. *
 ************************************************************************/
 
+// Board Manager index:
+// https://raw.githubusercontent.com/RAKwireless/RAKwireless-Arduino-BSP-Index/main/package_rakwireless_index.json
 #include <bluefruit.h>
 #include <math.h>
-#include <RAK13010_SDI12.h>
-#include <U8g2lib.h>
+#include <RAK13010_SDI12.h>  // http://librarymanager/All#RAKwireless_SDI-12
+#include <U8g2lib.h>         // http://librarymanager/All#U8g2
 
 #define DEBUG 0
 #define EMULATOR 0
@@ -176,7 +178,7 @@ void sonic_get(void) {
 #if EMULATOR
   windSpd = random(5, 500) / 100.0;
   windDir = random(0, 36000) / 100.0;
-  windTmp = random(0, 4000)/ 100.0;
+  windTmp = random(0, 4000) / 100.0;
   return;
 #endif
   mySDI12.clearBuffer();
