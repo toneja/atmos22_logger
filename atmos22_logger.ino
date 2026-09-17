@@ -74,7 +74,7 @@ void setup() {
 
 void loop() {
   if (millis() < nextPollingTime) { delay(nextPollingTime - millis()); }
-  nextPollingTime = millis() + SAMPLING_RATE;
+  nextPollingTime += SAMPLING_RATE;
   // Poll the sonic anemometer
   digitalWrite(LED_GREEN, HIGH);
   sonic_get();
