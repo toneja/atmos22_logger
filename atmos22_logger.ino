@@ -59,7 +59,8 @@ char bleName[15] = "ATMOS22 LOGGER";
 void setup() {
 #if DEBUG
   Serial.begin(115200);
-  while (!Serial) { delay(10); }
+  uint32_t start = millis();
+  while (!Serial && millis() - start < 3000) delay(10);  // wait up to 3 s for a monitor
   Serial.printf("Starting %s\n", bleName);
 #endif
   sensor_init();
