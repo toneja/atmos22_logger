@@ -43,6 +43,7 @@ float windTmp = 0.0;
 time_t nextPollingTime = 0;
 
 // BLUETOOTH
+BLEDfu bledfu;  // OTA updates
 #define MAX_SAMPLERS 4
 typedef struct {
   char name[16 + 1];
@@ -238,13 +239,17 @@ void response_handler(String response) {
 }
 
 bool ble_init(void) {
+  // Bandwidth and connection settings must be set before Bluefruit.begin().
+  Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
+  Bluefruit.configPrphConn(92, BLE_GAP_EVENT_LENGTH_MIN, 16, 16);
   // Disable connection LED
   Bluefruit.autoConnLed(false);
   if (!Bluefruit.begin(0, MAX_SAMPLERS)) { return false; }
-  Bluefruit.setTxPower(4);  // Check bluefruit.h for supported values
+  Bluefruit.setTxPower(8);  // Check bluefruit.h for supported values
   Bluefruit.setName(bleName);
   Bluefruit.Central.setConnectCallback(central_connect_callback);
   Bluefruit.Central.setDisconnectCallback(central_disconnect_callback);
+  bledfu.begin();
   for (uint8_t id = 0; id < MAX_SAMPLERS; id++) {
     memset(peripherals[id].name, 0, sizeof(peripherals[id].name));
     peripherals[id].conn_handle = BLE_CONN_HANDLE_INVALID;
